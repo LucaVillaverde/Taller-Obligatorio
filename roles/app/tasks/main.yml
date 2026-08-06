@@ -1,0 +1,19 @@
+- Instalar Apache
+
+- Instalar PHP
+
+- Instalar php-mysqlnd
+
+- Instalar Git
+
+- Clonar la aplicación
+
+- Copiar el template Cumple.php
+
+- Dar permisos
+
+- Habilitar Apache
+
+- Abrir firewalld
+
+- Comprobar HTTP

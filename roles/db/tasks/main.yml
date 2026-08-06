@@ -1,0 +1,19 @@
+- Instalar MariaDB
+
+- Instalar python3-pymysql
+
+- Iniciar MariaDB
+
+- Crear usuario
+
+- Crear base
+
+- Copiar SQL
+
+- Importar SQL
+
+- Configurar bind-address
+
+- Abrir UFW
+
+- Validar conexión
