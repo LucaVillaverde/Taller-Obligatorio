@@ -17,6 +17,11 @@
         enabled: true
         state: started
 
+    - name: Instalar Git en Servidor Aplicacion
+      ansible.builtin.dnf:
+        name: git
+        state: present
+
     - name: Clonar aplicación desde GitHub
       ansible.builtin.git:
         repo: "https://github.com/emverdes/dbappphp"
@@ -34,6 +39,12 @@
         permanent: true
         state: enabled
         immediate: true
+
+  handlers:
+    - name: restart apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
 
 - name: Configurar servidor de base de datos (Ubuntu)
   hosts: db
@@ -57,8 +68,9 @@
       community.mysql.mysql_db:
         name: "{{ db_name }}"
         state: present
-        login_user: root
+        login_user: admin
         login_password: "{{ mysql_root_password }}"
+
 
     - name: Crear usuario de aplicación
       community.mysql.mysql_user:
@@ -67,7 +79,7 @@
         priv: "{{ db_name }}.*:ALL"
         host: "{{ hostvars['appsrv'].ansible_host }}"
         state: present
-        login_user: root
+        login_user: admin
         login_password: "{{ mysql_root_password }}"
 
     - name: Copiar SQL inicial
@@ -97,15 +109,10 @@
         src: "{{ hostvars['appsrv'].ansible_host }}"
         port: "3306"
 
-# Handlers integrados al final del playbook
-handlers:
-  - name: restart apache
-    ansible.builtin.service:
-      name: httpd
-      state: restarted
+  handlers:
+    - name: restart mariadb
+      ansible.builtin.service:
+        name: mariadb
+        state: restarted
 
-  - name: restart mariadb
-    ansible.builtin.service:
-      name: mariadb
-      state: restarted
 ...
