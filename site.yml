@@ -61,7 +61,6 @@
         state: started
 
     - name: Crear usuario admin para Ansible
-<<<<<<< HEAD
       ansible.mysql.mysql_user:
         name: admin
         password: "{{ mysql_root_password }}"
@@ -69,15 +68,6 @@
         host: "%"
         state: present
         check_implicit_admin: true
-=======
-      ansible.builtin.command: >
-        mysql -u root -p{{ mysql_root_password }} -e "CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY '{{ mysql_root_password }}';
-        GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;
-        FLUSH PRIVILEGES;"
-      register: admin_user
-      changed_when: admin_user.rc == 0
-      ignore_errors: true
->>>>>>> 0beda16 (Agregando Templates)
 
     - name: Crear base de datos
       ansible.mysql.mysql_db:
