@@ -19,7 +19,7 @@
 
     - name: Clonar aplicación desde GitHub
       ansible.builtin.git:
-        repo: "https://github.com/usuario/dbapp.git"
+        repo: "https://github.com/emverdes/dbappphp.git"
         dest: /var/www/html
         version: main
 
