@@ -1,5 +1,5 @@
 <?php
-$conexion = new mysqli("{{ hostvars['dbsrv'].ansible_host }}", "{{ db_user }}", "{{ db_password }}", "{{ db_name }}");
+$conexion = new mysqli("192.168.1.11", "{{ db_user }}", "{{ db_password }}", "{{ db_name }}");
 
 if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
