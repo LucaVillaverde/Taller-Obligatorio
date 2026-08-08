@@ -23,14 +23,6 @@
         dest: /var/www/html
         version: main
 
-    - name: Ajustar permisos de aplicación
-      ansible.builtin.file:
-        path: /var/www/html
-        owner: apache
-        group: apache
-        mode: '0755'
-        recurse: true
-
     - name: Crear index.php que incluya cumple.php
       ansible.builtin.copy:
         dest: /var/www/html/index.php
@@ -64,6 +56,14 @@
 
     - name: Habilitar booleano SELinux para conexiones DB
       ansible.builtin.command: setsebool -P httpd_can_network_connect_db on
+      
+    - name: Ajustar permisos de aplicación
+      ansible.builtin.file:
+        path: /var/www/html
+        owner: apache
+        group: apache
+        mode: '0755'
+        recurse: true
 
 - name: Configurar servidor de base de datos (Ubuntu)
   hosts: db
