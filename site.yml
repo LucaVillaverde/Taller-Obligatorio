@@ -49,6 +49,14 @@
           require_once 'cumple.php';
           ?>
 
+    - name: Configurar cumple.php con parámetros de conexión
+      ansible.builtin.template:
+        src: roles/app/templates/config.php.j2
+        dest: /var/www/html/cumple.php
+        owner: apache
+        group: apache
+        mode: '0644'
+
     - name: Permitir HTTP en firewalld
       ansible.posix.firewalld:
         service: http
