@@ -60,21 +60,14 @@
         enabled: true
         state: started
 
-    - name: Configurar root para usar contraseña
-      ansible.builtin.command: >
-        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}'; FLUSH PRIVILEGES;"
-      register: root_config
-      changed_when: root_config.rc == 0
-      ignore_errors: true
-
     - name: Crear usuario admin para Ansible
-      ansible.builtin.command: >
-        mysql -u root -p{{ mysql_root_password }} -e "CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY '{{ mysql_root_password }}';
-        GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
-        FLUSH PRIVILEGES;"
-      register: admin_user
-      changed_when: admin_user.rc == 0
-      ignore_errors: true
+      ansible.mysql.mysql_user:
+        name: admin
+        password: "{{ mysql_root_password }}"
+        priv: "*.*:ALL,GRANT"
+        host: "%"
+        state: present
+        check_implicit_admin: true
 
     - name: Crear base de datos
       ansible.mysql.mysql_db:
@@ -87,7 +80,7 @@
       ansible.mysql.mysql_user:
         name: "{{ db_user }}"
         password: "{{ db_password }}"
-        priv: "{{ db_name }}.*:ALL"
+        priv: "{{ db_name }}.*:ALL PRIVILEGES"
         host: "{{ hostvars['appsrv'].ansible_host }}"
         state: present
         login_user: admin
