@@ -25,15 +25,21 @@
         mode: '0755'
         recurse: true
     
-    - name: Marcar /var/www/html como directorio seguro para Git
-      ansible.builtin.command: git config --global --add safe.directory /var/www/html
-
-
-    - name: Clonar aplicación desde GitHub
+    - name: Clonar aplicación desde GitHub en /tmp/dbappphp
       ansible.builtin.git:
         repo: "https://github.com/emverdes/dbappphp.git"
-        dest: /var/www/html
+        dest: /tmp/dbappphp
         version: main
+        force: yes
+
+    - name: Copiar aplicación al document root
+      ansible.builtin.copy:
+        src: /tmp/dbappphp
+        dest: /var/www/html
+        owner: apache
+        group: apache
+        mode: '0755'
+        remote_src: true
 
     - name: Crear index.php que incluya cumple.php
       ansible.builtin.copy:
