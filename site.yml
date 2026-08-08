@@ -1,12 +1,16 @@
 ---
-- hosts: app
-  become: true
-
-  roles:
-    - app
-
-- hosts: db
+- name: Configurar Servidor de Base de Datos
+  hosts: db
+  user: root
   become: true
 
   roles:
     - db
+
+- name: Configurar Servidor de Aplicación
+  hosts: app
+  user: root
+  become: true
+
+  roles:
+    - app

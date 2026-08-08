@@ -1,1 +1,5 @@
-restart mariadb
+---
+- name: restart mariadb
+  ansible.builtin.service:
+    name: mariadb
+    staste: restarted

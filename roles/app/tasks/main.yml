@@ -1,19 +1,62 @@
-- Instalar Apache
+---
+- name: Instalar Apache
+  ansible.builtin.dnf:
+    name: httpd
+    state: present
 
-- Instalar PHP
+- name: Instalar PHP y extensión MariaDB
+  ansible.builtin.dnf:
+    name:
+      - php
+      - php-mysqlnd
+    state: present
 
-- Instalar php-mysqlnd
+- name: Instalar Git
+  ansible.builtin.dnf:
+    name: git
+    state: present
 
-- Instalar Git
+- name: Clonar aplicación desde GitHub
+  ansible.builtin.git:
+    repo: "https://github.com/emverdes/dbappphp.git"
+    dest: /var/www/html/dbappphp
+    version: HEAD
 
-- Clonar la aplicación
+- name: Copiar template cumple.php
+  ansible.builtin.template:
+    src: cumple.php.j2
+    dest: /var/www/html/dbappphp/cumple.php
+    mode: '0644'
 
-- Copiar el template Cumple.php
+- name: Ajustar permisos en /var/www/html
+  ansible.builtin.file:
+    path: /var/www/html/dbappphp
+    owner: luca
+    group: luca
+    recurse: yes
 
-- Dar permisos
+- name: Habilitar y arrancar Apache
+  ansible.builtin.service:
+    name: httpd
+    enabled: true
+    state: started
 
-- Habilitar Apache
+- name: Permitir tráfico HTTP en firewalld
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    immediate: true
 
-- Abrir firewalld
+- name: Comprobar acceso HTTP
+  ansible.builtin.uri:
+    url: "http://{{ inventory_hostname }}/dbappphp/cumple.php"
+    return_content: true
+  register: http_result
 
-- Comprobar HTTP
+- name: Validar respuesta de la aplicación
+  ansible.builtin.assert:
+    that:
+      - "'Cumpleaños' in http_result.content"
+
+...
