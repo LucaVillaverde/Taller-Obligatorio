@@ -113,6 +113,13 @@
         src: "{{ hostvars['appsrv'].ansible_host }}"
         port: "3306"
 
+    - name: Permitir MariaDB desde el controlador (Equipo Ansible)
+      community.general.ufw:
+        rule: allow
+        proto: tcp
+        src: "{{ controller_ip }}"
+        port: "3306"
+
   handlers:
     - name: restart mariadb
       ansible.builtin.service:
