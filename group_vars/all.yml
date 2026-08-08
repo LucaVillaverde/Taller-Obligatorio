@@ -1,4 +1,4 @@
 mysql_root_password: "SuperSecretRootPass"
 db_name: "cumpleanios"
 db_user: "appuser"
-db_password: "AppPass123"
+db_password: "AppUserPass123"
