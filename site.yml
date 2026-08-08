@@ -24,6 +24,10 @@
         group: apache
         mode: '0755'
         recurse: true
+    
+    - name: Marcar /var/www/html como directorio seguro para Git
+      ansible.builtin.command: git config --global --add safe.directory /var/www/html
+
 
     - name: Clonar aplicación desde GitHub
       ansible.builtin.git:
