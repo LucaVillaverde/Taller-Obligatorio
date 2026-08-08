@@ -1,9 +1,4 @@
-db_host: 192.168.1.11
-db_name: cumples
-db_user: intranet_user
-db_password: claveSegura
-
-root_password: 1234
-admin_password: 1234
-
-app_path: /var/www/html
+mysql_root_password: "SuperSecretRootPass"
+db_name: "cumpleanios"
+db_user: "appuser"
+db_password: "AppPass123"
