@@ -86,9 +86,9 @@
         login_user: admin
         login_password: "{{ mysql_root_password }}"
 
-    - name: Copiar SQL inicial
-      ansible.builtin.copy:
-        src: roles/db/files/cumpleanios.sql
+    - name: Generar SQL inicial
+      ansible.builtin.template:
+        src: roles/db/templates/cumpleanios.sql.j2
         dest: /tmp/cumpleanios.sql
 
     - name: Importar datos iniciales
