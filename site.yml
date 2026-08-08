@@ -26,7 +26,7 @@
     - name: Configurar archivo de conexión
       ansible.builtin.template:
         src: roles/app/templates/config.php.j2
-        dest: /var/www/html/dbapp/config.php
+        dest: /var/www/html/dbapp/cumple.php
       notify: restart apache
 
     - name: Permitir HTTP en firewalld
@@ -51,14 +51,33 @@
         name:
           - mariadb-server
           - python3-pymysql
+          - ufw
         state: present
         update_cache: true
+
+    - name: Permitir conexiones SSH en UFW desde el controlador
+      community.general.ufw:
+        rule: allow
+        proto: tcp
+        src: "{{ controller_ip }}"
+        port: "22"
 
     - name: Habilitar y arrancar MariaDB
       ansible.builtin.service:
         name: mariadb
         enabled: true
         state: started
+
+    - name: Configurar /root/.my.cnf para MariaDB
+      ansible.builtin.copy:
+        dest: /root/.my.cnf
+        content: |
+          [client]
+          user=root
+          password={{ mysql_root_password }}
+        owner: root
+        group: root
+        mode: '0600'
 
     - name: Crear usuario admin para Ansible
       ansible.mysql.mysql_user:
