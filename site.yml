@@ -17,6 +17,14 @@
         state: started
         enabled: true
 
+    - name: Ajustar permisos de directorio
+      ansible.builtin.file:
+        path: /var/www/html
+        owner: apache
+        group: apache
+        mode: '0755'
+        recurse: true
+
     - name: Clonar aplicación desde GitHub
       ansible.builtin.git:
         repo: "https://github.com/emverdes/dbappphp.git"
@@ -57,13 +65,6 @@
     - name: Habilitar booleano SELinux para conexiones DB
       ansible.builtin.command: setsebool -P httpd_can_network_connect_db on
       
-    - name: Ajustar permisos de aplicación
-      ansible.builtin.file:
-        path: /var/www/html
-        owner: apache
-        group: apache
-        mode: '0755'
-        recurse: true
 
 - name: Configurar servidor de base de datos (Ubuntu)
   hosts: db
