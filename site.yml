@@ -129,23 +129,6 @@
         state: present
         check_implicit_admin: true
 
-    - name: Crear base de datos
-      ansible.mysql.mysql_db:
-        name: "{{ db_name }}"
-        state: present
-        login_user: admin
-        login_password: "{{ mysql_root_password }}"
-
-    - name: Crear usuario de aplicación
-      ansible.mysql.mysql_user:
-        name: "{{ db_user }}"
-        password: "{{ db_password }}"
-        priv: "{{ db_name }}.*:ALL PRIVILEGES"
-        host: "{{ hostvars['appsrv'].ansible_host }}"
-        state: present
-        login_user: admin
-        login_password: "{{ mysql_root_password }}"
-
     - name: Generar SQL inicial
       ansible.builtin.template:
         src: roles/db/templates/cumpleanios.sql.j2
@@ -156,6 +139,16 @@
         name: "{{ db_name }}"
         state: import
         target: /tmp/cumpleanios.sql
+        login_user: admin
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Crear usuario de aplicación
+      ansible.mysql.mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: "{{ db_name }}.*:ALL PRIVILEGES"
+        host: "{{ hostvars['appsrv'].ansible_host }}"
+        state: present
         login_user: admin
         login_password: "{{ mysql_root_password }}"
 
