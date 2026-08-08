@@ -1,6 +1,5 @@
 ---
-- name: Configurar servidor de aplicación (CentOS)
-  hosts: app
+- hosts: appsrv
   become: true
   tasks:
     - name: Instalar Apache, PHP y Git
@@ -15,19 +14,30 @@
     - name: Habilitar y arrancar Apache
       ansible.builtin.service:
         name: httpd
-        enabled: true
         state: started
+        enabled: true
 
     - name: Clonar aplicación desde GitHub
       ansible.builtin.git:
-        repo: "https://github.com/emverdes/dbappphp"
-        dest: /var/www/html/dbapp
+        repo: "https://github.com/usuario/dbapp.git"
+        dest: /var/www/html
+        version: main
 
-    - name: Configurar archivo de conexión
-      ansible.builtin.template:
-        src: roles/app/templates/config.php.j2
-        dest: /var/www/html/dbapp/cumple.php
-      notify: restart apache
+    - name: Ajustar permisos de aplicación
+      ansible.builtin.file:
+        path: /var/www/html
+        owner: apache
+        group: apache
+        mode: '0755'
+        recurse: true
+
+    - name: Crear index.php que incluya cumple.php
+      ansible.builtin.copy:
+        dest: /var/www/html/index.php
+        content: |
+          <?php
+          require_once 'cumple.php';
+          ?>
 
     - name: Permitir HTTP en firewalld
       ansible.posix.firewalld:
@@ -36,11 +46,24 @@
         state: enabled
         immediate: true
 
-  handlers:
-    - name: restart apache
-      ansible.builtin.service:
-        name: httpd
-        state: restarted
+    - name: Instalar policycoreutils-python-utils (para semanage)
+      ansible.builtin.dnf:
+        name: policycoreutils-python-utils
+        state: present
+
+    - name: Configurar contexto SELinux para aplicación
+      ansible.builtin.command: semanage fcontext -a -t httpd_sys_content_t "/var/www/html(/.*)?"
+      args:
+        creates: /etc/selinux/targeted/contexts/files/file_contexts.local
+
+    - name: Aplicar contexto SELinux
+      ansible.builtin.command: restorecon -Rv /var/www/html
+
+    - name: Habilitar booleanos SELinux para conexiones de Apache
+      ansible.builtin.command: setsebool -P httpd_can_network_connect on
+
+    - name: Habilitar booleano SELinux para conexiones DB
+      ansible.builtin.command: setsebool -P httpd_can_network_connect_db on
 
 - name: Configurar servidor de base de datos (Ubuntu)
   hosts: db
