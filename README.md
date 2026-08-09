@@ -60,7 +60,7 @@
                 PermitRootLogin yes
                 PubkeyAuthentication yes
             3. Guardar con Ctrl + O y salir con Ctrl + X.
-            4. Ejecutar "sudo systemctl restart ssh" y "sudo systemctl restart sshd"
+            4. Ejecutar "sudo systemctl restart ssh"
             5. Asignar contraseña al usuario root con "sudo passwd root"
             6. Desde el equipo 🚀Ansible ejecutar "ssh-copy-id root@192.168.1.11"
             7. Colocar la contraseña del usuario root cuando se solicite.
@@ -70,7 +70,7 @@
                 PermitRootLogin prohibit-password
                 PubkeyAuthentication yes
             11. Guardar con Ctrl + O y salir con Ctrl + X.
-            12. Ejecutar "sudo systemctl restart ssh" y "sudo systemctl restart sshd"
+            12. Ejecutar "sudo systemctl restart ssh"
 ### 🖥️ APPSrv
         1- ⚙️ Configuración de adaptador Red
         ❗Este paso te lo puedes saltar si tu maquina APPSrv tiene ip asignada en la Red Interna❗
@@ -94,7 +94,7 @@
                 PermitRootLogin yes
                 PubkeyAuthentication yes
             3. Guardar con Ctrl + O y salir con Ctrl + X.
-            4. Ejecutar "sudo systemctl restart ssh" y "sudo systemctl restart sshd"
+            4. Ejecutar "sudo systemctl restart sshd"
             5. Asignar contraseña al usuario root con "sudo passwd root"
             6. Desde el equipo 💻Ansible ejecutar "ssh-copy-id root@192.168.1.20"
             7. Colocar la contraseña del usuario root cuando se solicite.
@@ -104,7 +104,7 @@
                 PermitRootLogin prohibit-password
                 PubkeyAuthentication yes
             11. Guardar con Ctrl + O y salir con Ctrl + X.
-            12. Ejecutar "sudo systemctl restart ssh" y "sudo systemctl restart sshd"
+            12. Ejecutar "sudo systemctl restart sshd"
 ## 🚀 Instalación
 ### 💻 Ansible
         1. Instalar ansible-core y git con "sudo apt install ansible-core -y" y "sudo apt install git -y"
