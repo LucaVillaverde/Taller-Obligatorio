@@ -9,9 +9,9 @@
         -----------------------------------------------
         |    Maquina     |  Dirección IP Red Interna   |
         |----------------|-----------------------------|
-        | 🚀 ansible     |      192.168.1.10/24        |
-        | 🖥️ appsrv      |      192.168.1.11/24        |
-        | 🗄️ dbsrv       |      192.168.1.20/24        |
+        | 🚀 Ansible     |      192.168.1.10/24        |
+        | 🗄️ DBSrv       |      192.168.1.11/24        |
+        | 🖥️ APPSrv      |      192.168.1.20/24        |
         ------------------------------------------------
         Contar con el paquete openssh-server en appsrv y dbsrv.
         Instalacion Ubuntu: "sudo apt install openssh-server".
