@@ -14,10 +14,10 @@
         | 🗄️ dbsrv       |      192.168.1.20/24        |
         ------------------------------------------------
 ## ⚙️ Configuración
-**Este paso te lo puedes saltar si tu maquina ansible tiene ip asignada en la Red Interna**
-        Dentro de la maquina ansible ejecutamos "sudo touch /etc/netplan/01-netcfg.yaml"
-        Lo editamos con "sudo nano /etc/netplan/01-netcfg.yaml" y colocamos lo siguiente adentro:
-**Importante respetar la identación**
+        ❗Este paso te lo puedes saltar si tu maquina ansible tiene ip asignada en la Red Interna❗
+        1. Dentro de la maquina ansible ejecutamos "sudo touch /etc/netplan/01-netcfg.yaml"
+        2. Lo editamos con "sudo nano /etc/netplan/01-netcfg.yaml" y colocamos lo siguiente adentro:
+        ❗Importante respetar la identación❗
         network:
             version: 2
             renderer: networkd
@@ -26,6 +26,8 @@
                     dhcp4: no
                     addresses:
                         - 192.168.1.10/24
+        3. Ejecutar "sudo netplan apply" para aplicar la configuracion del archivo.
+        4. Comprobar con "ip a" si el adaptador enp0s8 tiene ip asignada "192.168.1.10"
 ## 🚀 Instalación
 ## 📚 Documentación
 ## 🤝 Contribuciones
