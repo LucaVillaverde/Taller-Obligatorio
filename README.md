@@ -14,10 +14,10 @@
         | 🗄️ dbsrv       |      192.168.1.20/24        |
         ------------------------------------------------
 ## ⚙️ Configuración
-        **Este paso te lo puedes saltar si tu maquina ansible tiene ip asignada en la Red Interna**
-        Dentro de la maquina ansible y, ejecutamos "sudo touch /etc/netplan/01-netcfg.yaml"
+**Este paso te lo puedes saltar si tu maquina ansible tiene ip asignada en la Red Interna**
+        Dentro de la maquina ansible ejecutamos "sudo touch /etc/netplan/01-netcfg.yaml"
         Lo editamos con "sudo nano /etc/netplan/01-netcfg.yaml" y colocamos lo siguiente adentro:
-        **Importante respetar la identación**
+**Importante respetar la identación**
         network:
             version: 2
             renderer: networkd
