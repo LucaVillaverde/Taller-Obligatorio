@@ -96,9 +96,9 @@
             3. Guardar con Ctrl + O y salir con Ctrl + X.
             4. Ejecutar "sudo systemctl restart ssh" y "sudo systemctl restart sshd"
             5. Asignar contraseña al usuario root con "sudo passwd root"
-            6. Desde el equipo 💻Ansible ejecutar "ssh-copy-id root@192.168.1.11"
+            6. Desde el equipo 💻Ansible ejecutar "ssh-copy-id root@192.168.1.20"
             7. Colocar la contraseña del usuario root cuando se solicite.
-            8. Probar a usar "ssh root@192.168.1.11" para comprobar el funcionamiento.
+            8. Probar a usar "ssh root@192.168.1.20" para comprobar el funcionamiento.
             9. En 🖥️DBSrv Ejecutar "sudo nano /etc/ssh/sshd_config" para editar el archivo de configuración.
             10. Ir al final y cambiar el valor "yes" de PermitRootLogin por "prohibit-password":
                 PermitRootLogin prohibit-password
