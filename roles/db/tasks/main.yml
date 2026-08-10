@@ -75,7 +75,7 @@
     ansible.mysql.mysql_db:
       name: "{{ db_name }}"
       state: import
-      target: /tmp/dbappphp/cumpleanios.sql
+      target: /tmp/db/cumpleanios.sql
       login_user: root
       login_password: "{{ mysql_root_password }}"
       login_host: "localhost"
