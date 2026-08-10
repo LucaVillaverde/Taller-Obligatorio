@@ -54,6 +54,7 @@
     ansible.builtin.copy:
       src: /tmp/dbappphp/cumpleanios.sql
       dest: /tmp/db/cumpleanios.sql
+      remote_src: true
 
   - name: Fix a SQL
     ansible.builtin.lineinfile:
