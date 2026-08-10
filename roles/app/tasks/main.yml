@@ -74,7 +74,7 @@
     when: selinux_context.changed
 
   - name: Habilitar booleanos SELinux para conexiones de Apache y DB
-    ansible.posix.sebool:
+    ansible.builtin.seboolean:
       name: "{{ item }}"
       state: true
       persistent: true
