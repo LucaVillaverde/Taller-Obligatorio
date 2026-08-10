@@ -1,0 +1,89 @@
+---
+  - name: Instalar Apache, PHP y Git
+    ansible.builtin.dnf:
+      name:
+        - httpd
+        - php
+        - php-mysqlnd
+        - git
+        - policycoreutils-python-utils
+      state: present
+
+  - name: Habilitar y arrancar Apache
+    ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: true
+
+  - name: Ajustar permisos de directorio
+    ansible.builtin.file:
+      path: /var/www/html
+      owner: apache
+      group: apache
+      mode: '0755'
+      recurse: true
+
+  - name: Clonar aplicación desde GitHub en /tmp/dbappphp
+    ansible.builtin.git:
+      repo: "https://github.com/emverdes/dbappphp.git"
+      dest: /tmp/dbappphp
+      version: main
+      force: yes
+
+  - name: Copiar aplicación al document root
+    ansible.builtin.copy:
+      src: /tmp/dbappphp/
+      dest: /var/www/html/
+      owner: apache
+      group: apache
+      mode: '0755'
+      remote_src: true
+
+  - name: Crear index.php que incluya cumple.php
+    ansible.builtin.copy:
+      dest: /var/www/html/index.php
+      content: |
+        <?php
+        require_once 'cumple.php';
+        ?>
+
+  - name: Configurar cumple.php con parámetros de conexión
+    ansible.builtin.lineinfile:
+      path: /var/www/html/cumple.php
+      regexp: '^\$conexion'
+      line: "$conexion = new mysqli('{{ hostvars['dbsrv'].ansible_host }}', '{{ db_user }}', '{{ db_password }}', '{{ db_name }}');"
+    notify: restart httpd
+
+
+  - name: Permitir HTTP en firewalld
+    ansible.posix.firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: true
+
+  - name: Configurar contexto SELinux para aplicación
+    community.general.sefcontext:
+      target: '/var/www/html(/.*)?'
+      setype: httpd_sys_content_t
+      state: present
+    register: selinux_context
+
+  - name: Aplicar contexto SELinux (restorecon)
+    ansible.posix.selinux_permissive:
+      name: httpd_t
+      permissive: false
+    # El comando restorecon nativo se ejecuta de forma óptima usando una validación condicional:
+    when: selinux_context.changed
+    ansible.builtin.command: restorecon -Rv /var/www/html
+
+  - name: Habilitar booleanos SELinux para conexiones de Apache y DB
+    ansible.posix.sebool:
+      name: "{{ item }}"
+      state: true
+      persistent: true
+    loop:
+      - httpd_can_network_connect
+      - httpd_can_network_connect_db
+
+...

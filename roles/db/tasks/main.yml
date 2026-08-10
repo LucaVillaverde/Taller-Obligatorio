@@ -1,0 +1,108 @@
+---
+  - name: Instalar MariaDB
+    ansible.builtin.apt:
+      name:
+        - mariadb-server
+        - python3-pymysql
+        - ufw
+        - git
+      state: present
+      update_cache: true
+
+  - name: Clonar aplicación desde GitHub en /tmp/dbappphp
+    ansible.builtin.git:
+      repo: "https://github.com/emverdes/dbappphp.git"
+      dest: /tmp/dbappphp
+      version: main
+      force: yes
+
+  - name: Permitir conexiones SSH en UFW desde el controlador
+    community.general.ufw:
+      rule: allow
+      proto: tcp
+      src: "{{ controller_ip }}"
+      port: "22"
+     
+  - name: Habilitar UFW
+    community.general.ufw:
+      state: enabled
+
+  - name: Habilitar y arrancar MariaDB
+    ansible.builtin.service:
+      name: mariadb
+      enabled: true
+      state: started
+
+#    - name: Configurar /root/.my.cnf para MariaDB
+#      ansible.builtin.copy:
+#        dest: /root/.my.cnf
+#        content: |
+#          [client]
+#          user=root
+#          password={{ mysql_root_password }}
+#        owner: root
+#        group: root
+#        mode: '0600'
+
+#    - name: Configurar root para usar mysql_native_password
+#       ansible.builtin.command: >
+#        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('{{ mysql_root_password }}'); FLUSH PRIVILEGES;"
+
+
+#    - name: Crear usuario admin para Ansible
+#      ansible.mysql.mysql_user:
+#        name: admin
+#        password: "{{ mysql_root_password }}"
+#        priv: "*.*:ALL,GRANT"
+#        host: "%"
+#        state: present
+#        check_implicit_admin: true
+#        login_user: root
+#        login_password: "{{ mysql_root_password }}"
+
+  - name: Fix a SQL
+    ansible.builtin.lineinfile:
+      path: /tmp/dbappphp/cumpleanios.sql
+      regexp: "^DROP DATABASE"
+      line: "DROP DATABASE IF EXISTS cumples;"
+
+  - name: Importar base de datos
+    ansible.mysql.mysql_db:
+      name: "{{ db_name }}"
+      state: import
+      target: /tmp/dbappphp/cumpleanios.sql
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+
+  - name: Crear usuario de aplicación
+    ansible.mysql.mysql_user:
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+      priv: "{{ db_name }}.*:ALL PRIVILEGES"
+      host: "{{ hostvars['appsrv'].ansible_host }}"
+      state: present
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+
+  - name: Configurar MariaDB para red local
+    ansible.builtin.lineinfile:
+      path: /etc/mysql/mariadb.conf.d/50-server.cnf
+      regexp: '^bind-address'
+      line: 'bind-address = 192.168.1.11'
+    notify: restart mariadb
+
+  - name: Permitir MariaDB desde servidor de aplicación
+    community.general.ufw:
+      rule: allow
+      proto: tcp
+      src: "{{ hostvars['appsrv'].ansible_host }}"
+      port: "3306"
+
+#    - name: Permitir MariaDB desde el controlador (Equipo Ansible)
+#      community.general.ufw:
+#        rule: allow
+#        proto: tcp
+#        src: "{{ controller_ip }}"
+#        port: "3306"
+
+...
