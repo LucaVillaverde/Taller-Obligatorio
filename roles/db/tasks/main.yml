@@ -50,9 +50,14 @@
       group: root
       mode: '0600'
 
+  - name: Copia de cumpleanios.sql Funcional
+    ansible.builtin.copy:
+      src: /tmp/dbappphp/cumpleanios.sql
+      dest: /tmp/db/cumpleanios.sql
+
   - name: Fix a SQL
     ansible.builtin.lineinfile:
-      path: /tmp/dbappphp/cumpleanios.sql
+      path: /tmp/db/cumpleanios.sql
       regexp: "^DROP DATABASE"
       line: "DROP DATABASE IF EXISTS cumples;"
 
