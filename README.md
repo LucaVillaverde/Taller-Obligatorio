@@ -16,6 +16,8 @@
         Contar con el paquete openssh-server en appsrv y dbsrv.
         Instalacion Ubuntu: "sudo apt install openssh-server".
         Instalación CentOS: "sudo dnf install openssh-server".
+        Procure reemplazar [usuario] en cada instancia mencionada por el nombre de la cuenta de usuario
+        usada en los equipos correspondientes.
 ## ⚙️ Configuración
 ### 🚀 Ansible
         1- ⚙️ Configuración de adaptador Red
@@ -54,23 +56,17 @@
             3. Ejecutar "sudo netplan apply" para aplicar la configuracion del archivo.
             4. Comprobar con "ip a" si el adaptador enp0s8 tiene ip asignada "192.168.1.11".
 
-        2- ⚙️ Configuración para Acceso Root
-            1. En 🗄️DBSrv Ejecutar "sudo nano /etc/ssh/sshd_config" para editar el archivo de configuración.
-            2. Ir al final y colocar lo siguiente:
-                PermitRootLogin yes
-                PubkeyAuthentication yes
-            3. Guardar con Ctrl + O y salir con Ctrl + X.
-            4. Ejecutar "sudo systemctl restart ssh"
-            5. Asignar contraseña al usuario root con "sudo passwd root"
-            6. Desde el equipo 🚀Ansible ejecutar "ssh-copy-id root@192.168.1.11"
-            7. Colocar la contraseña del usuario root cuando se solicite.
-            8. Probar a usar "ssh root@192.168.1.11" para comprobar el funcionamiento.
-            9. En 🗄️DBSrv Ejecutar "sudo nano /etc/ssh/sshd_config" para editar el archivo de configuración.
-            10. Ir al final y cambiar el valor "yes" de PermitRootLogin por "prohibit-password":
-                PermitRootLogin prohibit-password
-                PubkeyAuthentication yes
-            11. Guardar con Ctrl + O y salir con Ctrl + X.
-            12. Ejecutar "sudo systemctl restart ssh"
+        2- ⚙️ Configuración para Acceso con llave SSH
+            1. Desde 🚀Ansible ejecutar "ssh-copy-id [usuario]@192.168.1.11".
+            2. Colocar la contraseña del [usuario] cuando se solicite.
+            3. Comprobar conexión ssh con "ssh [usuario]@192.168.1.11"
+
+        3- 👑 Ejecución de comandos root sin contraseña
+            1. Desde 🗄️DBSrv ejecutar "sudo visudo".
+            2. Buscar "%sudo ALL=(ALL:ALL) ALL" y dejarlo así: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
+            3. Para nano, guardar con "Ctrl + O" y salir con "Ctrl + X".
+            4. Para vi, guardar y salir con la siguiente secuencia:
+                a. Dos puntos ":" y wq
 ### 🖥️ APPSrv
         1- ⚙️ Configuración de adaptador Red
         ❗Este paso te lo puedes saltar si tu maquina APPSrv tiene ip asignada en la Red Interna❗
@@ -88,23 +84,17 @@
             3. Ejecutar "sudo netplan apply" para aplicar la configuracion del archivo.
             4. Comprobar con "ip a" si el adaptador enp0s8 tiene ip asignada "192.168.1.20".
 
-        2- ⚙️ Configuración para Acceso Root
-            1. En 🖥️APPSrv Ejecutar "sudo nano /etc/ssh/sshd_config" para editar el archivo de configuración.
-            2. Ir al final y colocar lo siguiente:
-                PermitRootLogin yes
-                PubkeyAuthentication yes
-            3. Guardar con Ctrl + O y salir con Ctrl + X.
-            4. Ejecutar "sudo systemctl restart sshd"
-            5. Asignar contraseña al usuario root con "sudo passwd root"
-            6. Desde el equipo 💻Ansible ejecutar "ssh-copy-id root@192.168.1.20"
-            7. Colocar la contraseña del usuario root cuando se solicite.
-            8. Probar a usar "ssh root@192.168.1.20" para comprobar el funcionamiento.
-            9. En 🖥️APPSrv Ejecutar "sudo nano /etc/ssh/sshd_config" para editar el archivo de configuración.
-            10. Ir al final y cambiar el valor "yes" de PermitRootLogin por "prohibit-password":
-                PermitRootLogin prohibit-password
-                PubkeyAuthentication yes
-            11. Guardar con Ctrl + O y salir con Ctrl + X.
-            12. Ejecutar "sudo systemctl restart sshd"
+        2- ⚙️ Configuración para Acceso con llave SSH
+            1. Desde 🚀Ansible ejecutar "ssh-copy-id [usuario]@192.168.1.11".
+            2. Colocar la contraseña del [usuario] cuando se solicite.
+            3. Comprobar conexión ssh con "ssh [usuario]@192.168.1.20"
+        
+        3- 👑 Ejecución de comandos root sin contraseña
+            1. Desde 🖥️APPSrv ejecutar "sudo visudo".
+            2. Buscar "#%wheel ALL=(ALL) NOPASSWD: ALL" y dejarlo así: "%wheel ALL=(ALL) NOPASSWD: ALL"
+            3. Para nano, guardar con "Ctrl + O" y salir con "Ctrl + X".
+            4. Para vi, guardar y salir con la siguiente secuencia:
+                a. Dos puntos ":" y wq
 ## 🚀 Instalación
 ### 💻 Ansible
         1. Instalar ansible-core y git con "sudo apt install ansible-core -y" y "sudo apt install git -y"
@@ -115,7 +105,7 @@
         1. En el equipo 💻 Ansible en la carpeta del repositorio.
            Ejecutar "ansible-playbook -i hosts.ini site.yml"
         2. Cuando termine comprobar manualmente el funcionamiento con el siguiente comando:
-            "curl -i http://192.168.1.20/"
+            "curl http://192.168.1.20/"
         Referencia de salida:
             HTTP/1.1 200 OK
             Date: Sun, 09 Aug 2026 18:27:47 GMT
