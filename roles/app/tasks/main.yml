@@ -15,13 +15,6 @@
       state: started
       enabled: true
 
-  - name: Ajustar permisos de directorio
-    ansible.builtin.file:
-      path: /var/www/html
-      owner: apache
-      group: apache
-      mode: '0755'
-      recurse: true
 
   - name: Clonar aplicación desde GitHub en /tmp/dbappphp
     ansible.builtin.git:
@@ -53,6 +46,14 @@
       regexp: '^\s*\$conexion\s*='
       line: "$conexion = new mysqli('{{ hostvars['dbsrv'].ansible_host }}', '{{ db_user }}', '{{ db_password }}', '{{ db_name }}');"
     notify: restart httpd
+
+  - name: Ajustar permisos de directorio Apache
+    ansible.builtin.file:
+      path: /var/www/html
+      owner: apache
+      group: apache
+      mode: '0755'
+      recurse: true
 
   - name: Permitir HTTP en firewalld
     ansible.posix.firewalld:
