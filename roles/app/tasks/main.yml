@@ -70,12 +70,8 @@
     register: selinux_context
 
   - name: Aplicar contexto SELinux (restorecon)
-    ansible.posix.selinux_permissive:
-      name: httpd_t
-      permissive: false
-    # El comando restorecon nativo se ejecuta de forma óptima usando una validación condicional:
-    when: selinux_context.changed
     ansible.builtin.command: restorecon -Rv /var/www/html
+    when: selinux_context.changed
 
   - name: Habilitar booleanos SELinux para conexiones de Apache y DB
     ansible.posix.sebool:
@@ -85,5 +81,6 @@
     loop:
       - httpd_can_network_connect
       - httpd_can_network_connect_db
+
 
 ...
