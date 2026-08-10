@@ -23,22 +23,21 @@
       version: main
       force: yes
 
-  - name: Permitir conexiones SSH en UFW desde el controlador
-    community.general.ufw:
-      rule: allow
-      proto: tcp
-      src: "{{ controller_ip }}"
-      port: "22"
-
-  - name: Habilitar UFW
-    community.general.ufw:
-      state: enabled
-
   - name: Habilitar y arrancar MariaDB
     ansible.builtin.service:
       name: mariadb
       enabled: true
       state: started
+
+  - name: Configurar root para usar mysql_native_password
+    ansible.mysql.mysql_user:
+      name: root
+      password: "{{ mysql_root_password }}"
+      host: localhost
+      plugin: mysql_native_password
+      state: present
+      login_user: root
+      login_unix_socket: /var/run/mysqld/mysqld.sock
 
   - name: Configurar /root/.my.cnf para MariaDB
     ansible.builtin.copy:
@@ -50,22 +49,6 @@
       owner: root
       group: root
       mode: '0600'
-
-  - name: Configurar root para usar mysql_native_password
-    ansible.builtin.command: >
-      mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('{{ mysql_root_password }}'); FLUSH PRIVILEGES;"
-
-
-#    - name: Crear usuario admin para Ansible
-#      ansible.mysql.mysql_user:
-#        name: admin
-#        password: "{{ mysql_root_password }}"
-#        priv: "*.*:ALL,GRANT"
-#        host: "%"
-#        state: present
-#        check_implicit_admin: true
-#        login_user: root
-#        login_password: "{{ mysql_root_password }}"
 
   - name: Fix a SQL
     ansible.builtin.lineinfile:
@@ -118,11 +101,14 @@
       src: "{{ hostvars['appsrv'].ansible_host }}"
       port: "3306"
 
-#    - name: Permitir MariaDB desde el controlador (Equipo Ansible)
-#      community.general.ufw:
-#        rule: allow
-#        proto: tcp
-#        src: "{{ controller_ip }}"
-#        port: "3306"
+  - name: Permitir conexiones SSH en UFW desde el controlador
+    community.general.ufw:
+      rule: allow
+      proto: tcp
+      src: "{{ controller_ip }}"
+      port: "22"
 
+  - name: Habilitar UFW
+    community.general.ufw:
+      state: enabled
 ...

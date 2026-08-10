@@ -54,14 +54,6 @@
       line: "$conexion = new mysqli('{{ hostvars['dbsrv'].ansible_host }}', '{{ db_user }}', '{{ db_password }}', '{{ db_name }}');"
     notify: restart httpd
 
-  - name: Corregir consulta SQL reemplazando cumpleaños por cumpleanios
-    ansible.builtin.replace:
-      path: /var/www/html/cumple.php
-      regexp: 'FROM cumpleaños'
-      replace: 'FROM cumpleanios'
-    notify: restart httpd
-
-
   - name: Permitir HTTP en firewalld
     ansible.posix.firewalld:
       service: http
