@@ -89,6 +89,7 @@
   - name: Aplicar contexto SELinux (restorecon)
     ansible.builtin.command: restorecon -Rv /var/www/html
     when: selinux_context.changed
+    changed_when: true
 
   - name: Habilitar booleanos SELinux para conexiones de Apache y DB
     ansible.builtin.seboolean:
