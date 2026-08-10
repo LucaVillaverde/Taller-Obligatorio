@@ -65,11 +65,21 @@
       mode: '0600'
       remote_src: true
 
-  - name: Fix a SQL
+#  - name: Fix a SQL
+#    ansible.builtin.lineinfile:
+#      path: /tmp/db/cumpleanios.sql
+#     regexp: "^DROP DATABASE"
+#      line: "DROP DATABASE IF EXISTS cumples;"
+
+  - name: Remover sentencias destructivas del script SQL
     ansible.builtin.lineinfile:
       path: /tmp/db/cumpleanios.sql
-      regexp: "^DROP DATABASE"
-      line: "DROP DATABASE IF EXISTS cumples;"
+      regexp: "{{ item.regexp }}"
+      state: absent
+    loop:
+      - { regexp: '^DROP DATABASE' }
+      - { regexp: '^CREATE DATABASE' }
+      - { regexp: '^USE ' }
 
   - name: Importar base de datos
     ansible.mysql.mysql_db:
