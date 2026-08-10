@@ -1,5 +1,5 @@
 ---
-  - name: Instalar MariaDB
+  - name: Instalar Paquetes (MariaDB, Python, UFW, Git)
     ansible.builtin.apt:
       name:
         - mariadb-server
