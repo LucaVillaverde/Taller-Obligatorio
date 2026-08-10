@@ -1,0 +1,13 @@
+# Ignorar las credenciales reales de Ansible
+group_vars/all.yml
+
+# Ignorar archivos temporales o de reintento de Ansible
+*.retry
+
+# Ignorar carpetas ocultas de configuración local
+.idea/
+.vscode/
+
+# Ignorar archivos del sistema operativo
+.DS_Store
+Thumbs.db

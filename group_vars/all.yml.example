@@ -1,0 +1,6 @@
+# Esta es la estructura a seguir, coloca los valores correspondientes en tu caso.
+mysql_root_password: "1234"
+db_name: "cumples"
+db_user: "appuser"
+db_password: "AppUserPass123"
+controller_ip: 192.168.1.10

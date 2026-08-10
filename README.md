@@ -85,7 +85,7 @@
             4. Comprobar con "ip a" si el adaptador enp0s8 tiene ip asignada "192.168.1.20".
 
         2- ⚙️ Configuración para Acceso con llave SSH
-            1. Desde 🚀Ansible ejecutar "ssh-copy-id [usuario]@192.168.1.11".
+            1. Desde 🚀Ansible ejecutar "ssh-copy-id [usuario]@192.168.1.20".
             2. Colocar la contraseña del [usuario] cuando se solicite.
             3. Comprobar conexión ssh con "ssh [usuario]@192.168.1.20"
         
