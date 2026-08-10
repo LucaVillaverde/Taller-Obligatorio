@@ -15,7 +15,6 @@
       state: started
       enabled: true
 
-
   - name: Clonar aplicación desde GitHub en /tmp/dbappphp
     ansible.builtin.git:
       repo: "https://github.com/emverdes/dbappphp.git"
@@ -29,7 +28,6 @@
       dest: /var/www/html/
       owner: apache
       group: apache
-      mode: '0755'
       remote_src: true
 
   - name: Crear index.php que incluya cumple.php
@@ -47,13 +45,32 @@
       line: "$conexion = new mysqli('{{ hostvars['dbsrv'].ansible_host }}', '{{ db_user }}', '{{ db_password }}', '{{ db_name }}');"
     notify: restart httpd
 
-  - name: Ajustar permisos de directorio Apache
+  - name: Ajuste de permisos index.php y cumple.php
     ansible.builtin.file:
-      path: /var/www/html
+      path: "{{ item }}"
       owner: apache
       group: apache
-      mode: '0755'
-      recurse: true
+      mode: '0644'
+    loop:
+      - /var/www/html/cumple.php
+      - /var/www/html/index.php
+  
+  - name: Configurar permisos de documentación
+    ansible.builtin.file:
+      path: "{{ item }}"
+      owner: apache
+      group: apache
+      mode: '0640'
+    loop:
+      - /var/www/html/README.md
+      - /var/www/html/LICENSE
+
+  - name: Configurar permisos de cumpleanios.sql
+    ansible.builtin.file:
+      path: "/var/www/html/cumpleanios.sql"
+      owner: apache
+      group: apache
+      mode: '0600'
 
   - name: Permitir HTTP en firewalld
     ansible.posix.firewalld:
