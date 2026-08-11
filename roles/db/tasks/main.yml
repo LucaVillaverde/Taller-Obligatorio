@@ -137,27 +137,28 @@
     community.general.ufw:
       state: enabled
 
-  - name: CHECK - Validar que MariaDB responda en la IP configurada
+  - name: CHECK - Validar conectividad de MariaDB vía socket local
     ansible.mysql.mysql_info:
       filter: version
       login_user: root
       login_password: "{{ mysql_root_password }}"
-      login_host: "192.168.1.11"
+      login_unix_socket: /var/run/mysqld/mysqld.sock
     register: mariadb_status_check
     changed_when: false
 
-  - name: CHECK - Verificar existencia de la base de datos desde la IP de red
+  - name: CHECK - Verificar existencia de la base de datos
     ansible.mysql.mysql_info:
       filter: databases
       login_user: root
       login_password: "{{ mysql_root_password }}"
-      login_host: "192.168.1.11"
+      login_unix_socket: /var/run/mysqld/mysqld.sock
     register: mariadb_db_check
     failed_when: db_name not in mariadb_db_check.databases.keys()
     changed_when: false
 
   - name: CHECK - Confirmar estado de la Base de Datos
     ansible.builtin.debug:
-      msg: "¡Éxito! MariaDB respondiendo en 192.168.1.11. La base de datos '{{ db_name }}' está creada y accesible."
+      msg: "¡Éxito! Motor MariaDB activo. La base de datos '{{ db_name }}' está creada y accesible."
+
 
 ...
