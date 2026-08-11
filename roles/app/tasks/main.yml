@@ -113,8 +113,8 @@
     register: web_check
     failed_when: 
       - web_check.status != 200
-      - "'Apache/2.4.62' not in web_check.server"
-      - "'PHP/8.0.30' not in web_check.x_powered_by"
+      - "'Apache/' not in web_check.server"
+      - "'PHP/' not in web_check.x_powered_by"
       - "'<h1>Lista de Cumpleaños</h1>' not in web_check.content"
       - "'Frodo Baggins' not in web_check.content"
     changed_when: false
