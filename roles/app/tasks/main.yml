@@ -100,5 +100,17 @@
       - httpd_can_network_connect
       - httpd_can_network_connect_db
 
+  - name: CHECK - Realizar petición HTTP local para validar Apache y PHP
+    ansible.builtin.uri:
+      url: "http://localhost/"
+      return_content: true
+    register: web_check
+    failed_when: "'Lista de Cumpleaños' not in web_check.content"
+    changed_when: false
+
+  - name: CHECK - Confirmar éxito del servidor Web
+    ansible.builtin.debug:
+      msg: "¡Éxito! La aplicación web responde correctamente y contiene la lista de cumpleaños."
+
 
 ...

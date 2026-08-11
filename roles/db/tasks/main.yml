@@ -136,4 +136,27 @@
   - name: Habilitar UFW
     community.general.ufw:
       state: enabled
+
+  - name: CHECK - Validar que MariaDB responda localmente
+    ansible.mysql.mysql_ping:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+    register: mariadb_ping
+    changed_when: false
+
+  - name: CHECK - Verificar que el usuario de la app tenga acceso a la BD
+    ansible.mysql.mysql_info:
+      filter: databases
+      login_user: "{{ db_user }}"
+      login_password: "{{ db_password }}"
+      login_host: "localhost"
+    register: user_db_check
+    failed_when: db_name not in user_db_check.databases.keys()
+    changed_when: false
+
+  - name: CHECK - Confirmar estado de la Base de Datos
+    ansible.builtin.debug:
+      msg: "¡Éxito! El usuario '{{ db_user }}' se autentica correctamente y visualiza la base de datos '{{ db_name }}'."
+
 ...
