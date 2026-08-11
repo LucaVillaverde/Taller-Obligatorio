@@ -70,19 +70,17 @@
 ### 🖥️ APPSrv
         1- ⚙️ Configuración de adaptador Red
         ❗Este paso te lo puedes saltar si tu maquina APPSrv tiene ip asignada en la Red Interna❗
-            1. Dentro de la maquina 🖥️APPSrv ejecutamos "sudo touch /etc/netplan/01-netcfg.yaml"
-            2. Lo editamos con "sudo nano /etc/netplan/01-netcfg.yaml" y colocamos lo siguiente adentro:
-        ❗Importante respetar la identación❗
-            network:
-                version: 2
-                renderer: networkd
-                ethernets:
-                    enp0s8:
-                        dhcp4: no
-                        addresses:
-                            - 192.168.1.20/24
-            3. Ejecutar "sudo netplan apply" para aplicar la configuracion del archivo.
-            4. Comprobar con "ip a" si el adaptador enp0s8 tiene ip asignada "192.168.1.20".
+            1. Dentro de la maquina 🖥️APPSrv ejecutamos "sudo nmcli device connect enp0s8"
+            2. luego apretamos Ctrl + C.
+            3. Ejecutamos "sudo nmtui".
+            4. Entramos a editar una conexión.
+            5. Seleccionamos enp0s8.
+            6. Cambiamos la configuración IPV4 a manual.
+            7. Le colocamos "192.168.1.20/24" en Addresses.
+            8. Salimos hasta poder activar una conexión y entramos.
+            9. desactivamos y luego activamos enp0s8.
+            10. salimos completamente
+            11. Comprobar con "ip a" si el adaptador enp0s8 tiene ip asignada "192.168.1.20".
 
         2- ⚙️ Configuración para Acceso con llave SSH
             1. Desde 🚀Ansible ejecutar "ssh-copy-id [usuario]@192.168.1.20".
