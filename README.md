@@ -103,7 +103,7 @@
         4. Ejecutar "ansible-galaxy collection install -r requirements.yml"
 ## ▶️ Ejecución
         1. En el equipo 💻 Ansible en la carpeta del repositorio.
-           Ejecutar "ansible-playbook -i hosts.ini site.yml"
+           Ejecutar "ansible-playbook site.yml"
         2. Cuando termine comprobar manualmente el funcionamiento con el siguiente comando:
             "curl http://192.168.1.20/"
         Referencia de salida:
@@ -116,8 +116,9 @@
 
             <h1>Lista de Cumpleaños</h1><table border='1'><tr><th>Nombre</th><th>Fecha</th></tr><tr><td>Frodo Baggins</td><td>2005-01-14</td></tr><tr><td>Aragorn</td><td>2004-02-09</td></tr><tr><td>Arwen Undomiel</td><td>1994-12-09</td></tr></table>⏎
 ## ❗Importante
-        Por defecto, el proyecto está configurado para utilizar las credenciales definidas en /group_vars/all.yml.
-
+        Por defecto, el proyecto está configurado para utilizar las credenciales definidas en /group_vars/all.yml
+        
+        Hay un archivo de ejemplo en /group_vars/all.yml.example
         Estas credenciales son únicamente de ejemplo y están destinadas al entorno de laboratorio.
         Se recomienda reemplazarlas por credenciales propias y, en un entorno real,
         almacenarlas mediante Ansible Vault u otro mecanismo seguro para evitar que queden almacenadas en texto plano.  
