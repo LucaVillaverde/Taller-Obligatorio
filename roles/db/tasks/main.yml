@@ -95,7 +95,7 @@
     ansible.mysql.mysql_user:
       name: "{{ db_user }}"
       password: "{{ db_password }}"
-      priv: "{{ db_name }}.*:ALL PRIVILEGES"
+      priv: "{{ db_name }}.*:SELECT"
       host: "192.168.1.20"
       state: present
       login_user: root
