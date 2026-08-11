@@ -71,6 +71,17 @@
       regexp: "^DROP DATABASE"
       line: "DROP DATABASE IF EXISTS cumples;"
 
+  - name: Verificar si la base de datos ya existe
+    ansible.mysql.mysql_db:
+      name: "{{ db_name }}"
+      state: dump
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "localhost"
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+    register: db_check
+    ignore_errors: true
+
   - name: Importar base de datos
     ansible.mysql.mysql_db:
       name: "{{ db_name }}"
@@ -80,6 +91,8 @@
       login_password: "{{ mysql_root_password }}"
       login_host: "localhost"
       login_unix_socket: /var/run/mysqld/mysqld.sock
+    when: db_check.failed or (db_name not in db_check.databases | default([]))
+
 
   - name: Crear usuario de aplicación
     ansible.mysql.mysql_user:
