@@ -106,12 +106,17 @@
       - httpd_can_network_connect
       - httpd_can_network_connect_db
 
-  - name: CHECK - Realizar petición HTTP local para validar Apache y PHP
+  - name: CHECK - Realizar petición HTTP local para validar Apache, PHP y Contenido
     ansible.builtin.uri:
       url: "http://localhost/"
       return_content: true
     register: web_check
-    failed_when: "'Lista de Cumpleaños' not in web_check.content"
+    failed_when: 
+      - web_check.status != 200
+      - "'Apache/2.4.62' not in web_check.server"
+      - "'PHP/8.0.30' not in web_check.x_powered_by"
+      - "'<h1>Lista de Cumpleaños</h1>' not in web_check.content"
+      - "'Frodo Baggins' not in web_check.content"
     changed_when: false
 
   - name: CHECK - Confirmar éxito del servidor Web
