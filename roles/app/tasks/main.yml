@@ -41,9 +41,15 @@
   - name: Configurar cumple.php con parámetros de conexión
     ansible.builtin.lineinfile:
       path: /var/www/html/cumple.php
-      regexp: '^\s*\$conexion\s*='
+      search_string: '$conexion = new mysqli("IP_DEL_NODO2", "intranet_user", "claveSegura", "intranet");'
       line: "$conexion = new mysqli('{{ hostvars['dbsrv'].ansible_host }}', '{{ db_user }}', '{{ db_password }}', '{{ db_name }}');"
     notify: restart httpd
+
+  - name: Ajuste de linea en cumple.php
+    ansible.builtin.lineinfile:
+      path: /var/www/html/cumple.php
+      search_string: '$resultado = $conexion->query("SELECT nombre, fecha FROM cumpleaños ORDER BY MONTH(fecha), DAY(fecha)");'
+      line: '$resultado = $conexion->query("SELECT nombre, fecha FROM cumpleanios ORDER BY MONTH(fecha), DAY(fecha)");'
 
   - name: Ajuste de permisos index.php y cumple.php
     ansible.builtin.file:
