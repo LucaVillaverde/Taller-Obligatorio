@@ -88,7 +88,7 @@
       login_password: "{{ mysql_root_password }}"
       login_host: "localhost"
       login_unix_socket: /var/run/mysqld/mysqld.sock
-    when: db_name not in db_check.databases
+    when: db_name not in db_check.databases.keys()
 
 
   - name: Crear usuario de aplicación
@@ -138,11 +138,12 @@
       state: enabled
 
   - name: CHECK - Validar que MariaDB responda localmente
-    ansible.mysql.mysql_ping:
+    ansible.mysql.mysql_info:
+      filter: version
       login_user: root
       login_password: "{{ mysql_root_password }}"
       login_unix_socket: /var/run/mysqld/mysqld.sock
-    register: mariadb_ping
+    register: mariadb_status_check
     changed_when: false
 
   - name: CHECK - Verificar que el usuario de la app tenga acceso a la BD
@@ -151,8 +152,8 @@
       login_user: "{{ db_user }}"
       login_password: "{{ db_password }}"
       login_host: "localhost"
-    register: user_db_check
-    failed_when: db_name not in user_db_check.databases.keys()
+    register: mariadb_user_check
+    failed_when: db_name not in mariadb_user_check.databases.keys()
     changed_when: false
 
   - name: CHECK - Confirmar estado de la Base de Datos
